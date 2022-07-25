@@ -15,5 +15,8 @@
     "joi": "^17.6.0",
     "mongodb": "^4.8.0",
     "morgan": "~1.9.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.20.0"
   }
 }

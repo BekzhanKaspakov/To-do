@@ -1,56 +1,128 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import "./App.css";
+import {
+  selectTasks,
+  selectCurrentPage,
+  selectPerPage,
+  selectTotalCount,
+  selectSortBy,
+  selectSortOrder,
+} from "./store/task/task.selector";
+import {
+  fetchTasksStartAsync,
+  setCurrentPage,
+  setSort,
+} from "./store/task/task.action";
+import { createPages } from "./utils/func";
+import fontawesome from "@fortawesome/fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleUp, faAngleDown } from "@fortawesome/fontawesome-free-solid";
+
+fontawesome.library.add(faAngleUp, faAngleDown);
 
 function App() {
+  const dispatch = useDispatch();
+  const tasks = useSelector(selectTasks);
+  const currentPage = useSelector(selectCurrentPage);
+  const perPage = useSelector(selectPerPage);
+  const sortBy = useSelector(selectSortBy);
+  const sortOrder = useSelector(selectSortOrder);
+  const totalCount = useSelector(selectTotalCount);
+  const pagesCount = Math.ceil(totalCount / perPage);
+  const pages = [];
+  createPages(pages, pagesCount, currentPage);
+
+  useEffect(() => {
+    dispatch(fetchTasksStartAsync(currentPage, perPage, sortBy, sortOrder));
+  }, [dispatch, currentPage, perPage, sortBy, sortOrder]);
+
+  const sortHandler = (event) => {
+    const newSortBy = event.currentTarget.getAttribute("data-val");
+    dispatch(setSort(sortBy, sortOrder, newSortBy));
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
+      <div
+        style={{
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
+        }}
+      >
+        <table style={{ maxWidth: "900px" }} className="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col" data-val="username" onClick={sortHandler}>
+                <span>User</span>
+                {sortBy === "username" &&
+                  (sortOrder === "asc" ? (
+                    <FontAwesomeIcon icon="fa-solid fa-angle-down" />
+                  ) : (
+                    <FontAwesomeIcon icon="fa-solid fa-angle-up" />
+                  ))}
+              </th>
+              <th scope="col" data-val="email" onClick={sortHandler}>
+                <span>Email</span>
+                {sortBy === "email" &&
+                  (sortOrder === "asc" ? (
+                    <FontAwesomeIcon icon="fa-solid fa-angle-down" />
+                  ) : (
+                    <FontAwesomeIcon icon="fa-solid fa-angle-up" />
+                  ))}
+              </th>
+              <th scope="col" data-val="task_text" onClick={sortHandler}>
+                <span>Task</span>
+                {sortBy === "task_text" &&
+                  (sortOrder === "asc" ? (
+                    <FontAwesomeIcon icon="fa-solid fa-angle-down" />
+                  ) : (
+                    <FontAwesomeIcon icon="fa-solid fa-angle-up" />
+                  ))}
+              </th>
+              <th scope="col" data-val="isDone" onClick={sortHandler}>
+                <span>Status</span>
+                {sortBy === "isDone" &&
+                  (sortOrder === "asc" ? (
+                    <FontAwesomeIcon icon="fa-solid fa-angle-down" />
+                  ) : (
+                    <FontAwesomeIcon icon="fa-solid fa-angle-up" />
+                  ))}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {tasks.map((val, index) => (
+              <tr key={val._id}>
+                <th scope="row">{index + 1}</th>
+                <td>{val.username}</td>
+                <td>{val.email}</td>
+                <td>{val.task_text}</td>
+                <td>{val.isDone ? "Done" : "Not done"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className="pages">
+          {pages.map((page, index) => (
+            <span
+              className={
+                currentPage === page ? "btn btn-primary" : "btn btn-secondary"
+              }
+              key={index}
+              onClick={() => dispatch(setCurrentPage(page))}
+            >
+              {page}
+            </span>
+          ))}
+          {/* <button className="btn btn-secondary">Previous</button>
+          <button className="btn btn-primary">Next</button> */}
+        </div>
+      </div>
     </div>
   );
 }

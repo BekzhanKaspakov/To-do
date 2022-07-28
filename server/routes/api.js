@@ -1,6 +1,9 @@
 const Router = require("express");
 const Joi = require("joi");
-const dbo = require("../db/conn");
+const bcrypt = require("bcrypt");
+const User = require("../db/userModel");
+const Task = require("../db/taskModel");
+
 const schema = Joi.object({
   username: Joi.string().min(3).max(30).required(),
 
@@ -39,7 +42,6 @@ router.get("/tasks", async (req, res) => {
     res.status(400).send(value.error);
     return;
   }
-  const dbConnect = dbo.getDb();
 
   let sortBy = req.query.sortBy ?? "_id";
   let sortOrder = req.query.sortOrder === "desc" ? -1 : 1;
@@ -55,19 +57,20 @@ router.get("/tasks", async (req, res) => {
     queryObject["username"] = { $eq: req.query.username };
   }
 
-  const count = await dbConnect.collection("tasks").countDocuments();
+  const count = await Task.countDocuments();
 
-  dbConnect
-    .collection("tasks")
-    .find(queryObject)
+  Task.find(queryObject)
     .sort(sortObject)
     .skip(currentPage * perPage)
     .limit(perPage)
-    .toArray(function (err, result) {
+    .lean()
+    .exec(function (err, docs) {
+      // docs are plain javascript objects instead of model instances
+      console.log(docs);
       if (err) {
         res.status(400).send("Error fetching listings!");
       } else {
-        res.json({ items: result, totalCount: count });
+        res.json({ items: docs, totalCount: count });
       }
     });
 });
@@ -78,23 +81,60 @@ router.post("/add-task", function (req, res) {
     res.status(400).send(value.error);
     return;
   }
-  const dbConnect = dbo.getDb();
-  const matchDocument = {
+  // const matchDocument = {
+  //   username: value.value.username,
+  //   email: value.value.email,
+  //   task_text: value.value.task_text,
+  //   isDone: value.value.isDone,
+  // };
+
+  const task = new Task({
     username: value.value.username,
     email: value.value.email,
     task_text: value.value.task_text,
     isDone: value.value.isDone,
-  };
+  });
+  task
+    .save()
+    .then((result) => {
+      console.log(`Added a new match with id ${result._id}`);
+      res.status(201).json({ id: result._id });
+    })
+    .catch((error) => {
+      res
+        .status(400)
+        .json({ message: "Error inserting matches!", error: error });
+    });
+});
 
-  dbConnect
-    .collection("tasks")
-    .insertOne(matchDocument, function (err, result) {
-      if (err) {
-        res.status(400).send("Error inserting matches!");
-      } else {
-        console.log(`Added a new match with id ${result.insertedId}`);
-        res.status(201).json({ id: result.InsertedID });
-      }
+router.post("/register", function (req, res) {
+  bcrypt
+    .hash(req.body.password, 10)
+    .then((hashedPassword) => {
+      const user = new User({
+        email: req.body.email,
+        password: hashedPassword,
+      });
+      user
+        .save()
+        .then((result) => {
+          res.status(201).send({
+            message: "User Created Successfully",
+            result,
+          });
+        })
+        .catch((error) => {
+          res.status(500).send({
+            message: "Error creating user",
+            error,
+          });
+        });
+    })
+    .catch((e) => {
+      res.status(500).send({
+        message: "Password was not hashed successfully",
+        e,
+      });
     });
 });
 

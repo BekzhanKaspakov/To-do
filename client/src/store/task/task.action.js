@@ -1,6 +1,6 @@
 import { TASKS_ACTION_TYPES } from "./task.types";
 import { createAction } from "../../utils/reducer/reducer.utils";
-import { getTasks } from "../../utils/api/api.utils";
+import { getTasks, addTask } from "../../utils/api/api.utils";
 
 export const fetchTasksStart = () =>
   createAction(TASKS_ACTION_TYPES.FETCH_TASKS_START);
@@ -10,6 +10,15 @@ export const fetchTasksSuccess = (response) =>
 
 export const fetchTasksFailed = (error) =>
   createAction(TASKS_ACTION_TYPES.FETCH_TASKS_FAILED, error);
+
+export const addTaskStart = () =>
+  createAction(TASKS_ACTION_TYPES.ADD_TASK_START);
+
+export const addTaskSuccess = (response) =>
+  createAction(TASKS_ACTION_TYPES.ADD_TASK_SUCCESS, response);
+
+export const addTaskFailed = (error) =>
+  createAction(TASKS_ACTION_TYPES.ADD_TASK_FAILED, error);
 
 export const fetchTasksStartAsync = (
   currentPage,
@@ -43,4 +52,24 @@ export const setSort = (sortBy, sortOrder, newSortBy) => {
     sortBy: newSortBy,
     sortOrder: newSortOrder,
   });
+};
+
+export const addTaskStartAsync = (
+  tasks,
+  { username, email, task_text, isDone }
+) => {
+  return async (dispatch) => {
+    dispatch(addTaskStart());
+    try {
+      const response = await addTask(username, email, task_text, isDone);
+      dispatch(
+        addTaskSuccess([
+          ...tasks,
+          { _id: response.id, username, email, task_text, isDone },
+        ])
+      );
+    } catch (error) {
+      dispatch(addTaskFailed(error));
+    }
+  };
 };

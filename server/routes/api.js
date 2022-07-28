@@ -10,6 +10,8 @@ const schema = Joi.object({
   }),
 
   task_text: Joi.string().required(),
+
+  isDone: Joi.boolean().default(false),
 });
 
 const getSchema = Joi.object({
@@ -78,10 +80,10 @@ router.post("/add-task", function (req, res) {
   }
   const dbConnect = dbo.getDb();
   const matchDocument = {
-    username: req.body.username,
-    email: req.body.email,
-    task_text: req.body.task_text,
-    isDone: false,
+    username: value.value.username,
+    email: value.value.email,
+    task_text: value.value.task_text,
+    isDone: value.value.isDone,
   };
 
   dbConnect
@@ -91,7 +93,7 @@ router.post("/add-task", function (req, res) {
         res.status(400).send("Error inserting matches!");
       } else {
         console.log(`Added a new match with id ${result.insertedId}`);
-        res.status(204).send();
+        res.status(201).json({ id: result.InsertedID });
       }
     });
 });

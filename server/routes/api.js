@@ -67,7 +67,6 @@ router.get("/tasks", async (req, res) => {
     .lean()
     .exec(function (err, docs) {
       // docs are plain javascript objects instead of model instances
-      console.log(docs);
       if (err) {
         res.status(400).send("Error fetching listings!");
       } else {

@@ -50,3 +50,31 @@ export const addTask = async (username, email, task_text, isDone) => {
     return error;
   }
 };
+
+export const login = async (email, password) => {
+  const body = { email, password };
+
+  try {
+    const response = await fetch(`/api/register`, {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: JSON.stringify(body),
+    });
+
+    const data = await response.json();
+
+    // check for error response
+    if (!response.ok) {
+      // get error message from body or default to response statusText
+      const error = (data && data.message) || response.statusText;
+      return Promise.reject(error);
+    }
+
+    return data;
+  } catch (error) {
+    return error;
+  }
+};

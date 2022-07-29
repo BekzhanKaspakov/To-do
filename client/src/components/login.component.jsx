@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Button, Form } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import { postUserStartAsync } from "store/user/user.action";
 
 const defaultFormFields = {
   email: "",
@@ -8,6 +10,7 @@ const defaultFormFields = {
 
 const Login = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
+  const dispatch = useDispatch();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -18,8 +21,9 @@ const Login = () => {
     event.preventDefault();
 
     try {
-      // dispatch(addTaskStartAsync(tasks, formFields));
-      // setShow(false);
+      dispatch(
+        postUserStartAsync("login", formFields.email, formFields.password)
+      );
     } catch (error) {
       console.log("error adding food: ", error);
     }
@@ -28,7 +32,7 @@ const Login = () => {
   return (
     <Form onSubmit={(e) => handleSubmit(e)}>
       {/* email */}
-      <Form.Group controlId="formBasicEmail">
+      <Form.Group controlId="formLoginEmail">
         <Form.Label>Email address</Form.Label>
         <Form.Control
           type="email"
@@ -40,7 +44,7 @@ const Login = () => {
       </Form.Group>
 
       {/* password */}
-      <Form.Group controlId="formBasicPassword">
+      <Form.Group controlId="formLoginPassword">
         <Form.Label>Password</Form.Label>
         <Form.Control
           type="password"

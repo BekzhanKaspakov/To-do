@@ -11,15 +11,6 @@ export const fetchTasksSuccess = (response) =>
 export const fetchTasksFailed = (error) =>
   createAction(TASKS_ACTION_TYPES.FETCH_TASKS_FAILED, error);
 
-export const addTaskStart = () =>
-  createAction(TASKS_ACTION_TYPES.ADD_TASK_START);
-
-export const addTaskSuccess = (response) =>
-  createAction(TASKS_ACTION_TYPES.ADD_TASK_SUCCESS, response);
-
-export const addTaskFailed = (error) =>
-  createAction(TASKS_ACTION_TYPES.ADD_TASK_FAILED, error);
-
 export const fetchTasksStartAsync = (
   currentPage,
   perPage,
@@ -53,6 +44,15 @@ export const setSort = (sortBy, sortOrder, newSortBy) => {
     sortOrder: newSortOrder,
   });
 };
+
+export const addTaskStart = () =>
+  createAction(TASKS_ACTION_TYPES.ADD_TASK_START);
+
+export const addTaskSuccess = (response) =>
+  createAction(TASKS_ACTION_TYPES.ADD_TASK_SUCCESS, response);
+
+export const addTaskFailed = (error) =>
+  createAction(TASKS_ACTION_TYPES.ADD_TASK_FAILED, error);
 
 export const addTaskStartAsync = (
   tasks,

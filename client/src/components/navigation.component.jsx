@@ -1,13 +1,24 @@
 import { Fragment } from "react";
 import { Outlet } from "react-router-dom";
-
+import Cookies from "universal-cookie";
+import { setCurrentUser } from "store/user/user.action";
 import { Navbar, Container, Nav } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { selectCurrentUser } from "store/user/user.selector";
+const cookies = new Cookies();
 // import { useSelector } from "react-redux";
 // import { selectCurrentUser } from "../../store/user/user.selector";
 
 const Navigation = () => {
-  // const { state } = useContext(UserContext);
-  //   const currentUser = useSelector(selectCurrentUser);
+  const dispatch = useDispatch();
+  const currentUser = useSelector(selectCurrentUser);
+  const logout = () => {
+    // destroy the cookie
+    cookies.remove("TOKEN", { path: "/" });
+    dispatch(setCurrentUser(null));
+    // redirect user to the landing page
+    window.location.href = "/";
+  };
 
   return (
     <Fragment>
@@ -18,26 +29,11 @@ const Navigation = () => {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
               <Nav.Link href="/">To do list</Nav.Link>
-              <Nav.Link href="/auth">Login</Nav.Link>
-              {/* {!(currentUser && Object.keys(currentUser).length === 0) ? (
-                <Nav.Link
-                  onClick={async () => {
-                    localStorage.removeItem("user");
-                    await signOutUser();
-                    window.location.reload();
-                  }}
-                >
-                  SIGN OUT
-                </Nav.Link>
+              {currentUser ? (
+                <Nav.Link onClick={logout}>Logout</Nav.Link>
               ) : (
-                <Nav.Link href="/auth">SIGN IN</Nav.Link>
+                <Nav.Link href="/auth">Login</Nav.Link>
               )}
-              {currentUser && currentUser.role === "admin" && (
-                <>
-                  <Nav.Link href="/admin">Admin Page</Nav.Link>
-                  <Nav.Link href="/admin-report">Admin Report</Nav.Link>
-                </>
-              )} */}
             </Nav>
           </Navbar.Collapse>
         </Container>

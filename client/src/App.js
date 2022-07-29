@@ -5,11 +5,26 @@ import Todo from "./routes/todo/todo.component";
 import Navigation from "./components/navigation.component";
 import Authentication from "./routes/auth/auth.component";
 import { Container } from "react-bootstrap";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUser } from "store/user/user.selector";
+import Cookies from "universal-cookie";
+import jwt_decode from "jwt-decode";
+import { setCurrentUser } from "store/user/user.action";
+const cookies = new Cookies();
 
 function App() {
   const currentUser = useSelector(selectCurrentUser);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const token = cookies.get("TOKEN");
+
+    // returns route if there is a valid token set in the cookie
+    if (token) {
+      var decoded = jwt_decode(token);
+      dispatch(setCurrentUser({ email: decoded.email, token: token }));
+    }
+  }, []);
 
   return (
     <>

@@ -1,6 +1,8 @@
 import { USER_ACTION_TYPES } from "./user.types";
 import { createAction } from "../../utils/reducer/reducer.utils";
 import { login, register } from "utils/api/api.utils";
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
 
 export const setCurrentUser = (user) =>
   createAction(USER_ACTION_TYPES.SET_CURRENT_USER, user);
@@ -25,6 +27,9 @@ export const postUserStartAsync = (method, email, password) => {
       switch (method) {
         case "login":
           response = await login(email, password);
+          cookies.set("TOKEN", response.token, {
+            path: "/",
+          });
           dispatch(loginUserSuccess(response));
           break;
         case "register":

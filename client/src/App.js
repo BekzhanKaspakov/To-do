@@ -22,7 +22,15 @@ function App() {
     // returns route if there is a valid token set in the cookie
     if (token) {
       var decoded = jwt_decode(token);
-      dispatch(setCurrentUser({ email: decoded.email, token: token }));
+      const userObject = {
+        id: decoded.userId,
+        email: decoded.userEmail,
+        token: token,
+      };
+      if (decoded.role) {
+        userObject["role"] = decoded.role;
+      }
+      dispatch(setCurrentUser(userObject));
     }
   }, []);
 

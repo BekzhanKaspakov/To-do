@@ -157,25 +157,34 @@ router.post("/login", function (req, res) {
             });
           }
 
+          const jwtSignObject = {
+            userId: user._id,
+            userEmail: user.email,
+          };
+          if (user.role) {
+            jwtSignObject["role"] = user.role;
+          }
           //   create JWT token
-          const token = jwt.sign(
-            {
-              userId: user._id,
-              userEmail: user.email,
-            },
-            "RANDOM-TOKEN",
-            { expiresIn: "24h" }
-          );
+          const token = jwt.sign(jwtSignObject, "RANDOM-TOKEN", {
+            expiresIn: "24h",
+          });
 
           //   return success response
-          res.status(200).send({
+          const responseObject = {
             message: "Login Successful",
+            id: user._id,
             email: user.email,
             token,
-          });
+          };
+          if (user.role != null && user.role.length > 0) {
+            console.log(user.role);
+            responseObject["role"] = user.role;
+          }
+          res.status(200).send(responseObject);
         })
         // catch error if password does not match
         .catch((error) => {
+          console.log(error);
           res.status(400).send({
             message: "Passwords does not match",
             error,

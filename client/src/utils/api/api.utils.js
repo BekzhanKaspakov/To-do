@@ -73,7 +73,11 @@ export const login = async (email, password) => {
       return Promise.reject(error);
     }
 
-    return { email: data.email, token: data.token };
+    const returnObject = { email: data.email, token: data.token };
+    if (data.role) {
+      returnObject["role"] = data.role;
+    }
+    return returnObject;
   } catch (error) {
     return error;
   }

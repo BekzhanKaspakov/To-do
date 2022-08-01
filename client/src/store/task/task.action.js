@@ -1,6 +1,6 @@
 import { TASKS_ACTION_TYPES } from "./task.types";
 import { createAction } from "../../utils/reducer/reducer.utils";
-import { getTasks, addTask } from "../../utils/api/api.utils";
+import { getTasks, addTask, editTaskApi } from "../../utils/api/api.utils";
 
 export const fetchTasksStart = () =>
   createAction(TASKS_ACTION_TYPES.FETCH_TASKS_START);
@@ -72,4 +72,16 @@ export const addTaskStartAsync = (
       dispatch(addTaskFailed(error));
     }
   };
+};
+
+export const editTask = (tasks, newTask) => {
+  try {
+    editTaskApi(newTask);
+    const newTasks = tasks.map((task) =>
+      task._id !== newTask._id ? task : newTask
+    );
+    return createAction(TASKS_ACTION_TYPES.SET_TASKS, newTasks);
+  } catch (error) {
+    console.log(error);
+  }
 };

@@ -1,5 +1,5 @@
 import { Button } from "react-bootstrap";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   selectTasks,
@@ -20,6 +20,7 @@ import fontawesome from "@fortawesome/fontawesome";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleUp, faAngleDown } from "@fortawesome/fontawesome-free-solid";
 import ModalComponent from "../../components/modal.component";
+import TableRow from "components/table-row/table-row.component";
 
 fontawesome.library.add(faAngleUp, faAngleDown);
 
@@ -169,13 +170,7 @@ const Todo = () => {
           </thead>
           <tbody>
             {tasks.map((val, index) => (
-              <tr key={val._id}>
-                <th scope="row">{index + 1}</th>
-                <td>{val.username}</td>
-                <td>{val.email}</td>
-                <td>{val.task_text}</td>
-                <td>{val.isDone ? "Done" : "Not done"}</td>
-              </tr>
+              <TableRow key={val._id} val={val} index={index} />
             ))}
           </tbody>
         </table>

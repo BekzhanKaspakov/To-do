@@ -1,0 +1,12 @@
+.done {
+  .table-cell {
+    text-decoration: line-through;
+    .inline-edit {
+      text-decoration: line-through;
+    }
+  }
+}
+
+.table-cell {
+  vertical-align: middle;
+}

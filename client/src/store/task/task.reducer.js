@@ -62,6 +62,11 @@ export const tasksReducer = (state = TASKS_INITIAL_STATE, action = {}) => {
         sortBy: payload.sortBy,
         sortOrder: payload.sortOrder,
       };
+    case TASKS_ACTION_TYPES.SET_TASKS:
+      return {
+        ...state,
+        tasks: payload,
+      };
     default:
       return state;
   }

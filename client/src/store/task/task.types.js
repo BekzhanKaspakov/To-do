@@ -8,4 +8,5 @@ export const TASKS_ACTION_TYPES = {
   SET_CURRENT_PAGE: "tasks/SET_CURRENT_PAGE",
   SET_PER_PAGE: "tasks/SET_PER_PAGE",
   SET_SORT: "tasks/SET_SORT",
+  SET_TASKS: "tasks/SET_TASKS",
 };

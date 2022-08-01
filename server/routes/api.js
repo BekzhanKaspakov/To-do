@@ -6,6 +6,8 @@ const Task = require("../db/taskModel");
 const jwt = require("jsonwebtoken");
 
 const schema = Joi.object({
+  _id: Joi.string(),
+
   username: Joi.string().min(3).max(30).required(),
 
   email: Joi.string().email({
@@ -81,12 +83,6 @@ router.post("/add-task", function (req, res) {
     res.status(400).send(value.error);
     return;
   }
-  // const matchDocument = {
-  //   username: value.value.username,
-  //   email: value.value.email,
-  //   task_text: value.value.task_text,
-  //   isDone: value.value.isDone,
-  // };
 
   const task = new Task({
     username: value.value.username,
@@ -105,6 +101,30 @@ router.post("/add-task", function (req, res) {
         .status(400)
         .json({ message: "Error inserting matches!", error: error });
     });
+});
+
+router.post("/edit-task", function (req, res) {
+  const value = schema.validate(req.body);
+  if (value.error) {
+    res.status(400).send(value.error);
+    return;
+  }
+
+  const query = { _id: req.body._id };
+  const newTask = {
+    _id: req.body._id,
+    username: value.value.username,
+    email: value.value.email,
+    task_text: value.value.task_text,
+    isDone: value.value.isDone,
+  };
+
+  Task.findOneAndUpdate(query, newTask, { upsert: true }, function (err, doc) {
+    if (err) {
+      res.status(500).json({ message: "Error editing matches!", error: err });
+    }
+    res.status(200).json({ id: doc._id });
+  });
 });
 
 router.post("/register", function (req, res) {

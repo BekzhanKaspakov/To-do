@@ -3,7 +3,12 @@ const Joi = require("joi");
 const bcrypt = require("bcrypt");
 const User = require("../db/userModel");
 const Task = require("../db/taskModel");
+const InvalidToken = require("../db/invalidTokenModel");
 const jwt = require("jsonwebtoken");
+const func = require("../modules/func");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 const schema = Joi.object({
   _id: Joi.string(),
@@ -116,7 +121,7 @@ router.post("/add-task", function (req, res) {
     });
 });
 
-router.post("/edit-task", function (req, res) {
+router.post("/edit-task", func.authenticateToken, function (req, res) {
   const value = schema.validate(req.body);
   if (value.error) {
     res.status(400).send(value.error);
@@ -203,7 +208,7 @@ router.post("/login", function (req, res) {
             jwtSignObject["role"] = user.role;
           }
           //   create JWT token
-          const token = jwt.sign(jwtSignObject, "RANDOM-TOKEN", {
+          const token = jwt.sign(jwtSignObject, process.env.TOKEN_SECRET, {
             expiresIn: "24h",
           });
 
@@ -234,6 +239,23 @@ router.post("/login", function (req, res) {
       res.status(404).send({
         message: "No combinations of this email and password found",
         e,
+      });
+    });
+});
+
+router.post("/logout", function (req, res) {
+  const invalidToken = new InvalidToken({
+    token: req.body.token,
+  });
+  invalidToken
+    .save()
+    .then(() => {
+      res.sendStatus(204);
+    })
+    .catch((error) => {
+      res.status(500).send({
+        message: "Error creating user",
+        error,
       });
     });
 });

@@ -9,6 +9,7 @@ import {
   selectSortBy,
   selectSortOrder,
   selectSuccess,
+  selectError,
 } from "../../store/task/task.selector";
 import {
   addTaskStartAsync,
@@ -62,6 +63,7 @@ const Todo = () => {
 
   const dispatch = useDispatch();
   const success = useSelector(selectSuccess);
+  const error = useSelector(selectError);
   const tasks = useSelector(selectTasks);
   const currentPage = useSelector(selectCurrentPage);
   const perPage = useSelector(selectPerPage);
@@ -187,8 +189,13 @@ const Todo = () => {
           ))}
         </div>
         {success && success.addMessage && (
-          <div className="alert alert-success" role="alert">
+          <div className="mt-2 alert alert-success" role="alert">
             {success.addMessage}
+          </div>
+        )}
+        {error && error.edit && (
+          <div className="mt-2 alert alert-danger" role="alert">
+            {error.edit}
           </div>
         )}
       </div>

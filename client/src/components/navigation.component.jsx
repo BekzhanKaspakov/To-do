@@ -14,8 +14,9 @@ const Navigation = () => {
   const currentUser = useSelector(selectCurrentUser);
   const logout = () => {
     // destroy the cookie
+    const token = cookies.get("TOKEN");
+    dispatch(setCurrentUser(null, token));
     cookies.remove("TOKEN", { path: "/" });
-    dispatch(setCurrentUser(null));
     // redirect user to the landing page
     window.location.href = "/";
   };

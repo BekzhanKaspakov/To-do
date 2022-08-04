@@ -1,9 +1,13 @@
 import { TASKS_ACTION_TYPES } from "./task.types";
 import { createAction } from "../../utils/reducer/reducer.utils";
 import { getTasks, addTask, editTaskApi } from "../../utils/api/api.utils";
+import { setCurrentUser } from "store/user/user.action";
 
 export const setError = (error) =>
   createAction(TASKS_ACTION_TYPES.SET_ERROR, error);
+
+export const setTasks = (payload) =>
+  createAction(TASKS_ACTION_TYPES.SET_TASKS, payload);
 
 export const fetchTasksStart = () =>
   createAction(TASKS_ACTION_TYPES.FETCH_TASKS_START);
@@ -26,7 +30,7 @@ export const fetchTasksStartAsync = (
       const response = await getTasks(currentPage, perPage, sortBy, sortOrder);
       dispatch(fetchTasksSuccess(response));
     } catch (error) {
-      dispatch(fetchTasksFailed(error));
+      dispatch(fetchTasksFailed({ fetch: "Error fetching" }));
     }
   };
 };
@@ -72,19 +76,32 @@ export const addTaskStartAsync = (
         ])
       );
     } catch (error) {
-      dispatch(addTaskFailed(error));
+      dispatch(addTaskFailed({ addTask: "Error adding new task" }));
     }
   };
 };
 
-export const editTask = (tasks, newTask) => {
-  try {
-    editTaskApi(newTask);
-    const newTasks = tasks.map((task) =>
-      task._id !== newTask._id ? task : newTask
-    );
-    return createAction(TASKS_ACTION_TYPES.SET_TASKS, newTasks);
-  } catch (error) {
-    console.log(error);
-  }
+export const editTaskStart = () =>
+  createAction(TASKS_ACTION_TYPES.EDIT_TASK_START);
+
+export const editTaskSuccess = (newTasks) =>
+  createAction(TASKS_ACTION_TYPES.EDIT_TASK_SUCCESS, newTasks);
+
+export const editTaskFailed = (error) =>
+  createAction(TASKS_ACTION_TYPES.EDIT_TASK_FAILED, error);
+
+export const editTaskStartAsync = (tasks, newTask) => {
+  return async (dispatch) => {
+    dispatch(editTaskStart());
+    try {
+      await editTaskApi(newTask);
+      const newTasks = tasks.map((task) =>
+        task._id !== newTask._id ? task : newTask
+      );
+      dispatch(editTaskSuccess(newTasks));
+    } catch (error) {
+      dispatch(editTaskFailed({ edit: error }));
+      dispatch(setCurrentUser(null));
+    }
+  };
 };

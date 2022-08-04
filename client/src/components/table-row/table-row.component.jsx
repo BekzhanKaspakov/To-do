@@ -1,6 +1,6 @@
 import InlineEdit from "components/inline-edit/inline-edit.component";
 import { useDispatch, useSelector } from "react-redux";
-import { editTask } from "store/task/task.action";
+import { editTaskStartAsync } from "store/task/task.action";
 import { selectTasks } from "store/task/task.selector";
 import { selectCurrentUser } from "store/user/user.selector";
 import "./table-row.component.scss";
@@ -11,11 +11,11 @@ const TableRow = ({ val, index }) => {
   const dispatch = useDispatch();
 
   const submitTaskText = (value) => {
-    dispatch(editTask(tasks, { ...val, task_text: value }));
+    dispatch(editTaskStartAsync(tasks, { ...val, task_text: value }));
   };
 
   const onChangeIsDone = (value) => {
-    dispatch(editTask(tasks, { ...val, isDone: value }));
+    dispatch(editTaskStartAsync(tasks, { ...val, isDone: value }));
   };
 
   return (

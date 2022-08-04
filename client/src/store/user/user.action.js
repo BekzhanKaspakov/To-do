@@ -1,11 +1,15 @@
 import { USER_ACTION_TYPES } from "./user.types";
 import { createAction } from "../../utils/reducer/reducer.utils";
-import { login, register } from "utils/api/api.utils";
+import { login, logout, register } from "utils/api/api.utils";
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
 
-export const setCurrentUser = (user) =>
-  createAction(USER_ACTION_TYPES.SET_CURRENT_USER, user);
+export const setCurrentUser = (user, token = "") => {
+  if (user == null && token !== "") {
+    logout(token);
+  }
+  return createAction(USER_ACTION_TYPES.SET_CURRENT_USER, user);
+};
 
 export const postUserStart = () =>
   createAction(USER_ACTION_TYPES.POST_USER_START);
@@ -28,6 +32,8 @@ export const postUserFailed = (method, error) => {
   errorObject[method][`${method}Message`] = error;
   return createAction(USER_ACTION_TYPES.POST_USER_FAILED, errorObject);
 };
+
+export const postInvalidToken = (token) => {};
 
 export const postUserStartAsync = (method, email, password) => {
   return async (dispatch) => {

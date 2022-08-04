@@ -32,6 +32,19 @@ const getSchema = Joi.object({
   .with("currentPage", "perPage")
   .with("sortOrder", "sortBy");
 
+const registerSchema = Joi.object({
+  email: Joi.string()
+    .email({
+      minDomainSegments: 2,
+      tlds: { allow: ["com", "net"] },
+    })
+    .required(),
+
+  password: Joi.string().min(3).required(),
+})
+  .with("currentPage", "perPage")
+  .with("sortOrder", "sortBy");
+
 var router = Router();
 
 /* GET users listing. */
@@ -128,6 +141,11 @@ router.post("/edit-task", function (req, res) {
 });
 
 router.post("/register", function (req, res) {
+  const value = registerSchema.validate(req.body);
+  if (value.error) {
+    res.status(400).send(value.error);
+    return;
+  }
   bcrypt
     .hash(req.body.password, 10)
     .then((hashedPassword) => {
@@ -206,7 +224,7 @@ router.post("/login", function (req, res) {
         .catch((error) => {
           console.log(error);
           res.status(400).send({
-            message: "Passwords does not match",
+            message: "No combinations of this email and password found",
             error,
           });
         });
@@ -214,7 +232,7 @@ router.post("/login", function (req, res) {
     // catch error if email does not exist
     .catch((e) => {
       res.status(404).send({
-        message: "Email not found",
+        message: "No combinations of this email and password found",
         e,
       });
     });

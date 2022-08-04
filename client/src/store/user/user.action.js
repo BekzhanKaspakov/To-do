@@ -16,8 +16,18 @@ export const loginUserSuccess = (response) =>
 export const registerUserSuccess = (response) =>
   createAction(USER_ACTION_TYPES.REGISTER_USER_SUCCESS, response);
 
-export const postUserFailed = (error) =>
-  createAction(USER_ACTION_TYPES.POST_USER_FAILED, error);
+export const setError = (method, error) => {
+  const errorObject = {};
+  errorObject[method] = error;
+  return createAction(USER_ACTION_TYPES.SET_ERROR, errorObject);
+};
+
+export const postUserFailed = (method, error) => {
+  const errorObject = {};
+  errorObject[method] = {};
+  errorObject[method][`${method}Message`] = error;
+  return createAction(USER_ACTION_TYPES.POST_USER_FAILED, errorObject);
+};
 
 export const postUserStartAsync = (method, email, password) => {
   return async (dispatch) => {
@@ -41,7 +51,7 @@ export const postUserStartAsync = (method, email, password) => {
           return;
       }
     } catch (error) {
-      dispatch(postUserFailed(error));
+      dispatch(postUserFailed(method, error));
     }
   };
 };

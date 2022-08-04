@@ -44,3 +44,13 @@ export const selectSortOrder = createSelector(
   [selectTasksReducer],
   (tasksSlice) => tasksSlice.sortOrder
 );
+
+export const selectError = createSelector(
+  [selectTasksReducer],
+  (tasksSlice) => tasksSlice.error
+);
+
+export const selectSuccess = createSelector(
+  [selectTasksReducer],
+  (tasksSlice) => tasksSlice.success
+);

@@ -30,14 +30,14 @@ const TableRow = ({ val, index }) => {
         <span>{val.email}</span>
       </td>
       <td className="table-cell">
-        {user.role && user.role === "admin" ? (
+        {user && user.role && user.role === "admin" ? (
           <InlineEdit value={val.task_text} setValue={submitTaskText} />
         ) : (
           <span>{val.task_text}</span>
         )}
       </td>
       <td className="table-cell">
-        {user.role && user.role === "admin" && (
+        {user && user.role && user.role === "admin" && (
           <input
             className="inline-edit"
             type="checkbox"

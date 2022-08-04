@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { useEffect } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import Todo from "./routes/todo/todo.component";
 import Navigation from "./components/navigation.component";
@@ -24,21 +24,14 @@ function App() {
       var decoded = jwt_decode(token);
       dispatch(setCurrentUser(decoded));
     }
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
       <Navigation />
       <Container>
         <Routes>
-          <Route
-            path="/"
-            element={
-              <RequireAuth currentUser={currentUser}>
-                <Todo />
-              </RequireAuth>
-            }
-          />
+          <Route path="/" element={<Todo />} />
           <Route
             path="auth"
             element={
@@ -53,15 +46,15 @@ function App() {
   );
 }
 
-function RequireAuth({ children, currentUser }) {
-  let location = useLocation();
+// function RequireAuth({ children, currentUser }) {
+//   let location = useLocation();
 
-  if (currentUser == null || Object.keys(currentUser).length === 0) {
-    return <Navigate to="/auth" state={{ from: location }} replace />;
-  }
+//   if (currentUser == null || Object.keys(currentUser).length === 0) {
+//     return <Navigate to="/auth" state={{ from: location }} replace />;
+//   }
 
-  return children;
-}
+//   return children;
+// }
 
 function NotRequireAuth({ children, currentUser }) {
   if (currentUser != null && Object.keys(currentUser).length > 0) {

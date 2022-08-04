@@ -1,4 +1,6 @@
 import { Button, Modal, Form } from "react-bootstrap";
+import { useSelector } from "react-redux";
+import { selectError } from "store/task/task.selector";
 
 function ModalComponent({
   formFields,
@@ -8,9 +10,11 @@ function ModalComponent({
   handleSubmit,
   modalTitle,
 }) {
+  const error = useSelector(selectError);
+
   return (
     <Modal show={show} onHide={handleClose}>
-      <form onSubmit={(event) => handleSubmit(event)}>
+      <Form onSubmit={handleSubmit}>
         <Modal.Header closeButton>
           <Modal.Title>{modalTitle}</Modal.Title>
         </Modal.Header>
@@ -26,12 +30,18 @@ function ModalComponent({
               }}
               name="username"
               value={formFields.username}
+              isInvalid={
+                error != null && error.username != null ? true : undefined
+              }
             />
+            <Form.Control.Feedback type="invalid">
+              {error && error.username}
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group className="mb-3" controlId="formEmail">
             <Form.Label>Email</Form.Label>
             <Form.Control
-              type="email"
+              type="text"
               autoComplete="off"
               placeholder="Enter Email"
               onChange={(event) => {
@@ -39,7 +49,13 @@ function ModalComponent({
               }}
               name="email"
               value={formFields.email}
+              isInvalid={
+                error != null && error.task_text != null ? true : undefined
+              }
             />
+            <Form.Control.Feedback type="invalid">
+              {error && error.email}
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group className="mb-3" controlId="formTaskText">
             <Form.Label>Task</Form.Label>
@@ -52,7 +68,13 @@ function ModalComponent({
               }}
               name="task_text"
               value={formFields.task_text}
+              isInvalid={
+                error != null && error.task_text != null ? true : undefined
+              }
             />
+            <Form.Control.Feedback type="invalid">
+              {error && error.task_text}
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group className="mb-3" controlId="formIsDone">
             <Form.Check
@@ -74,7 +96,7 @@ function ModalComponent({
             Add
           </Button>
         </Modal.Footer>
-      </form>
+      </Form>
     </Modal>
   );
 }

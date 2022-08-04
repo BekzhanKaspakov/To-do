@@ -8,11 +8,13 @@ import {
   selectTotalCount,
   selectSortBy,
   selectSortOrder,
+  selectSuccess,
 } from "../../store/task/task.selector";
 import {
   addTaskStartAsync,
   fetchTasksStartAsync,
   setCurrentPage,
+  setError,
   setSort,
 } from "../../store/task/task.action";
 import { createPages } from "../../utils/func";
@@ -59,6 +61,7 @@ const Todo = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
 
   const dispatch = useDispatch();
+  const success = useSelector(selectSuccess);
   const tasks = useSelector(selectTasks);
   const currentPage = useSelector(selectCurrentPage);
   const perPage = useSelector(selectPerPage);
@@ -97,11 +100,7 @@ const Todo = () => {
     event.preventDefault();
     const error = validate(formFields);
     if (Object.keys(error).length > 0) {
-      let errorMessage = "Errors: \n";
-      for (const key in error) {
-        errorMessage += `${key}: ${error[key]}\n`;
-      }
-      alert(errorMessage);
+      dispatch(setError(error));
       return;
     }
 
@@ -187,6 +186,11 @@ const Todo = () => {
             </span>
           ))}
         </div>
+        {success && success.addMessage && (
+          <div className="alert alert-success" role="alert">
+            {success.addMessage}
+          </div>
+        )}
       </div>
       <ModalComponent
         formFields={formFields}

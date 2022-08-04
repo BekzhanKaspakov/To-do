@@ -21,6 +21,8 @@ export const userReducer = (state = INITIAL_STATE, action) => {
       return { ...state, isLoading: false, successMessage: payload };
     case USER_ACTION_TYPES.POST_USER_FAILED:
       return { ...state, isLoading: false, error: payload };
+    case USER_ACTION_TYPES.SET_ERROR:
+      return { ...state, error: payload };
     default:
       return state;
   }

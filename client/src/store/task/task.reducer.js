@@ -4,6 +4,7 @@ export const TASKS_INITIAL_STATE = {
   tasks: [],
   isLoading: false,
   error: null,
+  success: null,
   currentPage: 1,
   perPage: 3,
   totalCount: 0,
@@ -41,6 +42,7 @@ export const tasksReducer = (state = TASKS_INITIAL_STATE, action = {}) => {
     case TASKS_ACTION_TYPES.ADD_TASK_SUCCESS:
       return {
         ...state,
+        success: { addMessage: "New task successfully added" },
         isLoading: false,
         tasks: payload,
         totalCount: state.totalCount + 1,
@@ -66,6 +68,11 @@ export const tasksReducer = (state = TASKS_INITIAL_STATE, action = {}) => {
       return {
         ...state,
         tasks: payload,
+      };
+    case TASKS_ACTION_TYPES.SET_ERROR:
+      return {
+        ...state,
+        error: payload,
       };
     default:
       return state;

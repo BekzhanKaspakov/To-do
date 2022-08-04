@@ -2,6 +2,9 @@ import { TASKS_ACTION_TYPES } from "./task.types";
 import { createAction } from "../../utils/reducer/reducer.utils";
 import { getTasks, addTask, editTaskApi } from "../../utils/api/api.utils";
 
+export const setError = (error) =>
+  createAction(TASKS_ACTION_TYPES.SET_ERROR, error);
+
 export const fetchTasksStart = () =>
   createAction(TASKS_ACTION_TYPES.FETCH_TASKS_START);
 

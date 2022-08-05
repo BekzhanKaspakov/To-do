@@ -1,3 +1,7 @@
+import Cookies from "universal-cookie";
+
+const cookies = new Cookies();
+
 export const getTasks = async (currentPage, perPage, sortBy, sortOrder) => {
   const paramsObject = {};
   if (currentPage) paramsObject["currentPage"] = currentPage;
@@ -50,11 +54,12 @@ export const addTask = async (username, email, task_text, isDone) => {
 
 export const editTaskApi = async (newTask) => {
   const body = { ...newTask };
-
+  const token = cookies.get("TOKEN");
   const response = await fetch(`/api/edit-task`, {
     method: "post",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: JSON.stringify(body),

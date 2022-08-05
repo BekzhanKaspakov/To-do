@@ -25,6 +25,7 @@ const functions = {
         try {
           const tokenDoc = await InvalidToken.findOne({ token: token });
           if (tokenDoc != null) {
+            console.log(tokenDoc);
             return res.status(401).send({ message: "Invalid Token" });
           }
         } catch (err) {

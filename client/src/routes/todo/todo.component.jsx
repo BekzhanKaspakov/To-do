@@ -107,7 +107,7 @@ const Todo = () => {
     }
 
     try {
-      dispatch(addTaskStartAsync(tasks, formFields));
+      dispatch(addTaskStartAsync(tasks, totalCount, formFields));
       setShow(false);
     } catch (error) {
       console.log("error adding food: ", error);
@@ -170,9 +170,11 @@ const Todo = () => {
             </tr>
           </thead>
           <tbody>
-            {tasks.map((val, index) => (
-              <TableRow key={val._id} val={val} index={index} />
-            ))}
+            {tasks &&
+              tasks.length > 0 &&
+              tasks.map((val, index) => (
+                <TableRow key={val._id} val={val} index={index} />
+              ))}
           </tbody>
         </table>
         <div className="pages">

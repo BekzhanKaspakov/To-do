@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node server/app.js",
-    "build": "cd client && npm install && npm run build"
+    "start": "node server/bin/www",
+    "build": "cd server && npm install"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",

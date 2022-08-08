@@ -1,6 +1,7 @@
 import Cookies from "universal-cookie";
 
 const cookies = new Cookies();
+const url = "https://todo-list-app-bekzhan.herokuapp.com";
 
 export const getTasks = async (currentPage, perPage, sortBy, sortOrder) => {
   const paramsObject = {};
@@ -10,7 +11,7 @@ export const getTasks = async (currentPage, perPage, sortBy, sortOrder) => {
   if (sortOrder) paramsObject["sortOrder"] = sortOrder;
   const params = new URLSearchParams(paramsObject);
   try {
-    const response = await fetch(`/api/tasks?${params.toString()}`);
+    const response = await fetch(`${url}/api/tasks?${params.toString()}`);
 
     const data = await response.json();
 
@@ -30,7 +31,7 @@ export const getTasks = async (currentPage, perPage, sortBy, sortOrder) => {
 export const addTask = async (username, email, task_text, isDone) => {
   const body = { username, email, task_text, isDone };
 
-  const response = await fetch(`/api/add-task`, {
+  const response = await fetch(`${url}/api/add-task`, {
     method: "post",
     headers: {
       "Content-Type": "application/json",
@@ -55,7 +56,7 @@ export const addTask = async (username, email, task_text, isDone) => {
 export const editTaskApi = async (newTask) => {
   const body = { ...newTask };
   const token = cookies.get("TOKEN");
-  const response = await fetch(`/api/edit-task`, {
+  const response = await fetch(`${url}/api/edit-task`, {
     method: "post",
     headers: {
       "Content-Type": "application/json",
@@ -84,7 +85,7 @@ export const login = async (email, password) => {
   const body = { email, password };
 
   try {
-    const response = await fetch(`/api/login`, {
+    const response = await fetch(`${url}/api/login`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
@@ -116,7 +117,7 @@ export const register = async (email, password) => {
   const body = { email, password };
 
   try {
-    const response = await fetch(`/api/register`, {
+    const response = await fetch(`${url}/api/register`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
@@ -144,7 +145,7 @@ export const logout = async (token) => {
   const body = { token };
 
   try {
-    const response = await fetch(`/api/logout`, {
+    const response = await fetch(`${url}/api/logout`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",

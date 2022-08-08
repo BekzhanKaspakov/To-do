@@ -23,6 +23,8 @@ const schema = Joi.object({
   task_text: Joi.string().required(),
 
   isDone: Joi.boolean().default(false),
+
+  isEdited: Joi.boolean(),
 });
 
 const getSchema = Joi.object({
@@ -136,13 +138,26 @@ router.post("/edit-task", func.authenticateToken, function (req, res) {
     task_text: value.value.task_text,
     isDone: value.value.isDone,
   };
+  Task.findOne({ _id: newTask._id })
 
-  Task.findOneAndUpdate(query, newTask, { upsert: true }, function (err, doc) {
-    if (err) {
-      res.status(500).json({ message: "Error editing matches!", error: err });
-    }
-    res.status(200).json({ id: doc._id });
-  });
+    // if email exists
+    .then((oldTask) => {
+      if (oldTask.task_text !== newTask.task_text) {
+        newTask["isEdited"] = true;
+      }
+      Task.findOneAndUpdate(query, newTask, { upsert: true }, function (err) {
+        if (err) {
+          res
+            .status(500)
+            .json({ message: "Error editing matches!", error: err });
+        }
+        res.status(200).json(newTask);
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({ message: "Error editing task", error: err });
+    });
+  // compare the password entered and the hashed password found
 });
 
 router.post("/register", function (req, res) {

@@ -11,7 +11,9 @@ const TableRow = ({ val, index }) => {
   const dispatch = useDispatch();
 
   const submitTaskText = (value) => {
-    dispatch(editTaskStartAsync(tasks, { ...val, task_text: value }));
+    dispatch(
+      editTaskStartAsync(tasks, { ...val, task_text: value, isEdited: true })
+    );
   };
 
   const onChangeIsDone = (value) => {
@@ -48,6 +50,8 @@ const TableRow = ({ val, index }) => {
         )}
         <span style={{ margin: "0 5px" }}>
           {val.isDone ? "Done" : "Not done"}
+          <br />
+          {val.isEdited ? "Отредактировано Администратором" : ""}
         </span>
       </td>
     </tr>

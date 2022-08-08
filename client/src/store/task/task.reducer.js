@@ -32,6 +32,7 @@ export const tasksReducer = (state = TASKS_INITIAL_STATE, action = {}) => {
         ...state,
         tasks: payload.tasks,
         totalCount: payload.totalCount ?? state.totalCount,
+        success: payload.success,
       };
     case TASKS_ACTION_TYPES.SET_CURRENT_PAGE:
       return {

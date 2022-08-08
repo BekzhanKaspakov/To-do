@@ -48,7 +48,6 @@ export const fetchTasksStartAsync = (
     dispatch(taskActionStart());
     try {
       const response = await getTasks(currentPage, perPage, sortBy, sortOrder);
-      console.log(response);
       dispatch(
         taskActionSuccess({
           tasks: response.items,
@@ -76,7 +75,7 @@ export const addTaskStartAsync = (
             ...tasks,
             { _id: response.id, username, email, task_text, isDone },
           ],
-          successMessage: { add: "New task successfully added" },
+          success: { add: "New task successfully added" },
           totalCount: totalCount + 1,
         })
       );
@@ -91,14 +90,24 @@ export const editTaskStartAsync = (tasks, newTask) => {
     dispatch(taskActionStart());
     try {
       await editTaskApi(newTask);
+
       const newTasks = tasks.map((task) =>
         task._id !== newTask._id ? task : newTask
       );
-      dispatch(taskActionSuccess({ tasks: newTasks }));
+      dispatch(
+        taskActionSuccess({
+          tasks: newTasks,
+          //success: {
+          //  edit: "Отредактировано администратором",
+          //}
+        })
+      );
     } catch (error) {
       dispatch(taskActionFail({ edit: error }));
-      cookies.remove("TOKEN", { path: "/" });
-      dispatch(setCurrentUser(null));
+      if (error.includes("Unauthorized")) {
+        cookies.remove("TOKEN", { path: "/" });
+        dispatch(setCurrentUser(null));
+      }
     }
   };
 };

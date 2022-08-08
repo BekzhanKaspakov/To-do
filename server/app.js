@@ -20,7 +20,7 @@ app.use(cookieParser());
 app.use((req, res, next) => {
   res.setHeader(
     "Access-Control-Allow-Origin",
-    "https://todo-list-bekzhan.netlify.app/"
+    "https://todo-list-bekzhan.netlify.app"
   );
   res.setHeader(
     "Access-Control-Allow-Headers",

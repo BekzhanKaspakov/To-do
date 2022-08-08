@@ -18,7 +18,10 @@ app.use(cookieParser());
 
 // Curb Cores Error by adding a header here
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "todo-list-bekzhan.netlify.app");
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://todo-list-bekzhan.netlify.app/"
+  );
   res.setHeader(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content, Accept, Content-Type, Authorization"

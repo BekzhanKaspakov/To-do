@@ -14,8 +14,8 @@
 
 ## Installation
 
-- `git clone git@github.com:BekzhanKaspakov/sturdy-broccoli.git`
-- cd sturdy-broccoli
+- `git clone git@github.com:BekzhanKaspakov/to-do.git`
+- cd to-do
 
 ### Server
 
